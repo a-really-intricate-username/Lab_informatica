@@ -1,6 +1,12 @@
-def base_datos(usuarios,registros,estaciones):
+
+def base_datos(usuarios,registros,estaciones, variables):
     #abre todas las bases de datos
+    usuarios = hola
+    with open(usuarios, "r") as c:
+        lector_csv = usuarios.reader(c, delimiter = ",")
     # las carga en las variables del programa
+
+
     pass
 def menu_inicial():
     #da a elegir tipo de usuario (registrado, visitante) y salir de sistema
