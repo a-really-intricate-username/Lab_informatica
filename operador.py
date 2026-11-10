@@ -2,11 +2,11 @@
 def seleccionar_estacion():
     #da la opcion al operador de escoger una estacion para ver sus medidas o ingresar nuevas medidas
     print("Seleccione una estación para ver sus medidas o ingresar nuevas medidas:")
-    print("\n1. I.E. Concejo Municipal de Itagüí\n"
-      "2. E.U. Joaquín Aristizábal\n"
-      "3. Hospital\n"
-      "4. Torre Social\n"
-      "5. Parque principal")
+    print("\n1. I.E. Concejo Municipal de Itagüí\n",
+    "2. E.U. Joaquín Aristizábal\n",
+    "3. Hospital\n",
+    "4. Torre Social\n",
+    "5. Parque principal")
     
 def mostrar_medidas():
     estacion = registros["1"]
