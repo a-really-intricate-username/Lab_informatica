@@ -3,6 +3,7 @@ import csv, json
 def base_datos(usuarios,estaciones,registros,variables):
     #abre todas las bases de datos las lee y las guarda en variables
     #los csv quedan guardados en listas de diccionarios
+
     with open(usuarios, 'r')as archivo_usuarios:
         lector_csv = csv.DictReader(archivo_usuarios, delimiter=',')
         datos_usuarios = list(lector_csv)
@@ -22,7 +23,7 @@ def base_datos(usuarios,estaciones,registros,variables):
 
 # las carga en las variables del programa
 
-usuarios, estaciones, registros, variables = base_datos('usuarios.csv', 'estaciones.csv', 'registros.json', 'variables.json')
+usuarios, estaciones, registros, variables = base_datos('base_datos/usuarios.csv', 'base_datos/estaciones.csv', 'base_datos/registros.json', 'base_datos/variables.json')
 def menu_inicial():
     #da a elegir tipo de usuario (registrado, visitante) y salir de sistema
     print("="*45)
