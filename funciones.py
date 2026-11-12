@@ -29,72 +29,88 @@ def menu_inicial():
     print("="*45)
     print("Bienvenido al sistema de monitoreo de clima")
     print("="*45)
-    print("\n1.registrado  2.visitante  3.salir ")
-    tipo_usuario = input("\nIngrese su tipo de usuario:")
-    T = True
-    while T:
+    
+    while True:
+        print("\n1.registrado  2.visitante  3.salir ")
+        tipo_usuario = input("\nIngrese su tipo de usuario:")
         if tipo_usuario == "1":
-            if login():
-                T = False
+            login()
         elif tipo_usuario == "2":
             menu_invitado()
         elif tipo_usuario == "3":
             print("Saliendo del sistema...")
-            T = False
+            return
         else:
-            print("Opción inválida. Por favor, ingrese 'registrado', 'visitante' o 'salir'.")
-            tipo_usuario = input("Ingrese su tipo de usuario (registrado, visitante) o 'salir' para salir del sistema: ")
+            print("Opción inválida. Por favor, ingrese 1, 2 o 3.")
+            
             
     
 def login():
     #si es usuario registrado, pide su documento y contraseña para autentificar 
-    B = True
-    C = True
-    while B:
-        
-            documento = input("\nIngrese su documento:")
-            if documento.isdigit():
-                break
-            print("Numero invalido, por favor vuelva a ingresar su documento")
+    while True:
+        B = True
+        C = True
+        while B:
             
-    while C:        
-        
-            contraseña = input("\nIngrese su contraseña:")
-            if contraseña.isdigit():
-                break
-            print("Numero invalido, por favor vuelva a ingresar su contraseña")
+                documento = input("\nIngrese su documento:")
+                if documento.isdigit():
+                    break
+                print("Numero invalido, por favor vuelva a ingresar su documento")
+                
+        while C:        
             
-    for usuario in usuarios:
-        if usuario["codigo"] == documento and usuario["clave"] == contraseña:
-            print ("\n", "="*4, "Bienvenido", usuario["nombre"], "su rol es", usuario["rol"], "="*4 )
-            if usuario["rol"] == "Operador":
-                estacion_elegida = seleccionar_estacion()
-                print("Escoja que quiere realizar"
-                      "\n1. Ver medidas de la estacion"
-                      "\n2. Ingresar nuevas medidas")
-                accion = input("\nIngrese el número de la acción que desea realizar: ")
-                if accion == "1":
-                    mostrar_medidas(estacion_elegida)
-                            
-            return True
+                contraseña = input("\nIngrese su contraseña:")
+                if contraseña.isdigit():
+                    break
+                print("Numero invalido, por favor vuelva a ingresar su contraseña")
+                
+        for usuario in usuarios:
+            if usuario["codigo"] == documento and usuario["clave"] == contraseña:
+                print ("\n", "="*4, "Bienvenido", usuario["nombre"], "su rol es", usuario["rol"], "="*4 )
+                if usuario["rol"] == "Operador":
+                    estacion_elegida = seleccionar_estacion()
+                    if estacion_elegida is None:
+                        return
+                    print("Escoja que quiere realizar"
+                            "\n1. Ver medidas de la estacion"
+                            "\n2. Ingresar nuevas medidas")
+                    accion = input("\nIngrese el número de la acción que desea realizar: ")
+                    if accion == "1":
+                        mostrar_medidas(estacion_elegida)
+                                
+                
 
-            
-    else:
-        print("Usuario o contraseña incorrectos")
-    return False
+                
+        else:
+            print("Usuario o contraseña incorrectos")
+
     
     # y ver si es operador o administrador
 
 
 def seleccionar_estacion():
     #da la opcion al operador de escoger una estacion para ver sus medidas o ingresar nuevas medidas
-    print("Seleccione una estación para ver sus medidas o ingresar nuevas medidas:")
+    print("\nSeleccione una estación para ver sus medidas o ingresar nuevas medidas:")
     print("\n1. I.E. Concejo Municipal de Itagüí\n"
       "2. E.U. Joaquín Aristizábal\n"
       "3. Hospital\n"
       "4. Torre Social\n"
-      "5. Parque principal")
-    estacion = input("\nIngrese el número de la estación que desea seleccionar: ")
+      "5. Parque principal\n"
+      "6. C.C Mayorca\n"
+      "7. Atras")
+    estacion = input("\nIngrese el número de la estación que desea seleccionar:")
+    S = True
+    print("Has escogido", estacion)
+    while S: 
+        if estacion in ["1", "2", "3", "4", "5", "6"]:
+            break
+        elif estacion == "7":
+            
+            return None
+            
+        print("Opción inválida. Por favor, ingrese un número del 1 al 7.")
+        estacion = input("Ingrese el número de la estación que desea seleccionar: ")
+
     return estacion
     
 def mostrar_medidas(registro):
@@ -107,46 +123,8 @@ def mostrar_medidas(registro):
 
         for fecha, valores in fechas.items():
             print(f"{fecha} | {valores}")
+    seleccionar_estacion()
     
-    estacion_elegida = registros[registro]
-
-    for categoria, fechas in estacion_elegida.items():
-        print(f"\n{categoria}")
-        print("Fecha       | Mediciones")
-        print("-" * 50)
-
-        for fecha, valores in fechas.items():
-            print(f"{fecha} | {valores}")
-
-    estacion_elegida = registros[registro]
-
-    for categoria, fechas in estacion_elegida.items():
-        print(f"\n{categoria}")
-        print("Fecha       | Mediciones")
-        print("-" * 50)
-
-        for fecha, valores in fechas.items():
-            print(f"{fecha} | {valores}")
-
-    estacion_elegida = registros[registro]
-
-    for categoria, fechas in estacion_elegida.items():
-        print(f"\n{categoria}")
-        print("Fecha       | Mediciones")
-        print("-" * 50)
-
-        for fecha, valores in fechas.items():
-            print(f"{fecha} | {valores}")
-
-    estacion_elegida = registros[registro]
-
-    for categoria, fechas in estacion_elegida.items():
-        print(f"\n{categoria}")
-        print("Fecha       | Mediciones")
-        print("-" * 50)
-
-        for fecha, valores in fechas.items():
-            print(f"{fecha} | {valores}")
     
 def ingresar_medidas():
     #ingresa nuevas medidas registradas para la estacion
