@@ -372,10 +372,23 @@ def eliminar_usuario():
                     Documento_invalido = True
                     continue
                 else:
-                    usuarios = [usuario for usuario in usuarios if usuario["codigo"] != Documento]
-                    print("Usuario eliminado con exito")
-                    usuario_invalido = False
-                    continue
+                    confirmacion_valida = False
+                    while not confirmacion_valida:
+                        confirmacion = input(f"Esta seguro que desea eliminar a {usuario['nombre']}? ('Si' -- 'No'): ").strip().lower()
+                        if confirmacion == "si":
+                            usuarios = [u for u in usuarios if u["codigo"] != Documento]
+                            print("Usuario eliminado con exito")
+                            confirmacion_valida = True
+                            usuario_invalido = False
+                        elif confirmacion == "no":
+                            print("Eliminacion cancelada")
+                            return
+                        else:
+                            print("Por favor ingrese una opcion valida")
+                break
+                  
+                    
+                    
     guardar_archivos("usuarios")
 
     
@@ -481,22 +494,25 @@ def visualizar_estadisticas():
         cantidad = 0
         for estacion in estaciones:
             mediciones = registros.get(estacion["codigo"], {}).get(variable, {})
-            for fecha_texto, valor in mediciones.items():
-                if valor == -999:
-                    continue
+            for fecha_texto, valores in mediciones.items():
                 try:
                     fecha = datetime.strptime(fecha_texto, "%Y-%m-%d").date()
                 except ValueError:
                     continue
                 if fecha < fecha_inicio or fecha > fecha_fin:
                     continue
-                suma += valor
-                cantidad += 1
-                if maximo is None or valor > maximo[0]:
-                    maximo = (valor, estacion["nombre"], fecha_texto)
-                if minimo is None or valor < minimo[0]:
-                    minimo = (valor, estacion["nombre"], fecha_texto)
- 
+                if not isinstance(valores, list):
+                    valores = [valores]
+                for valor in valores:
+                    if isinstance(valor, bool) or not isinstance(valor, (int, float)) or valor == -999:
+                        continue
+                    suma += valor
+                    cantidad += 1
+                    if maximo is None or valor > maximo[0]:
+                        maximo = (valor, estacion["nombre"], fecha_texto)
+                    if minimo is None or valor < minimo[0]:
+                        minimo = (valor, estacion["nombre"], fecha_texto)
+
         lineas.append(f"\n{variable} ({unidades})")
         if cantidad == 0:
             lineas.append("  No hay mediciones válidas en este periodo.")
@@ -517,6 +533,8 @@ def visualizar_estadisticas():
     
 
 def guardar_archivos(tipo):
+    #depende del argumento que se usa en cada funcion
+    #esta sobreescribe los archivos si es csv o json
     if tipo == "usuarios":
         ruta = "base_datos/usuarios.csv"
         datos = usuarios
