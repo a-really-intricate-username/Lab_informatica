@@ -41,8 +41,8 @@ def login():
     while True:
         documento_valido = False
         while not documento_valido:
-            documento = input("\nIngrese su documento ('Salir' para volver):").strip()
-            if documento == "Salir":
+            documento = input("\nIngrese su documento ('Salir' para volver):").strip().lower()
+            if documento == "salir":
                 return False, None
             elif documento.isdigit() and len(documento) == 10:
                 documento_valido = True
