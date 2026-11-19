@@ -11,6 +11,27 @@ de las estaciones, las estaciones en si mismas y los usuarios registrados
 import csv, json
 from datetime import datetime, timedelta
 def base_datos(Archivo_usuarios,Archivo_estaciones,Archivo_registros,Archivo_variables,Archivo_registros_v2):
+    """
+    Firma:
+        (str, str, str, str, str) -> None
+
+    Sinopsis:
+        Abre los archivos CSV y JSON del programa, lee su contenido y lo
+        almacena en las variables globales correspondientes.
+
+    Entradas y salidas:
+        - Archivo_usuarios: nombre o ruta del archivo CSV de usuarios.
+        - Archivo_estaciones: nombre o ruta del archivo CSV de estaciones.
+        - Archivo_registros: nombre o ruta del archivo JSON de registros.
+        - Archivo_variables: nombre o ruta del archivo JSON de variables.
+        - Archivo_registros_v2: nombre o ruta del segundo archivo JSON de registros.
+        - returns: None; carga los datos en usuarios, estaciones, registros,
+          variables y registros_v2.
+
+    Ejemplos de uso:
+        base_datos("usuarios.csv", "estaciones.csv", "registros.json",
+                   "variables.json", "registros_v2.json")
+    """
     #abre todas las bases de datos las lee y las guarda en variables
     #los csv quedan guardados en listas de diccionarios
     global usuarios, estaciones, registros, variables, registros_v2
@@ -31,12 +52,25 @@ def base_datos(Archivo_usuarios,Archivo_estaciones,Archivo_registros,Archivo_var
     with open(Archivo_variables, 'r')as archivo_variables:
         variables = json.load(archivo_variables)
 
-
-# las carga en las variables del programa
-
 def login():
-    #si es usuario registrado, pide su documento y contraseña para autenticar
-    #y ver si es operador o administrador
+    """
+    Firma:
+        () -> (bool, str | None)
+
+    Sinopsis:
+        Solicita el documento y la contraseña de un usuario registrado,
+        comprueba sus credenciales e identifica si su rol es operador o
+        administrador.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: una tupla (True, rol) si el ingreso es correcto, o
+          (False, None) si la persona escribe "Salir".
+
+    Ejemplos de uso:
+        >>> login()
+        (True, "Operador")
+    """
     global documento_usuario_activo
     while True:
         documento_valido = False
@@ -56,8 +90,6 @@ def login():
             else:
                 contrasena_valida = True
 
-            
-
         for usuario in usuarios:
             if usuario["codigo"] == documento and usuario["clave"] == contrasena:
                 documento_usuario_activo = documento
@@ -67,6 +99,23 @@ def login():
         print("Usuario o contraseña incorrectos")
 
 def seleccionar_estacion():
+    """
+    Firma:
+        () -> (str | None)
+
+    Sinopsis:
+        Muestra las estaciones disponibles y permite seleccionar una
+        mediante su código.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: el código de la estación seleccionada, o None si se
+          elige la opción de regresar.
+
+    Ejemplos de uso:
+        >>> seleccionar_estacion()
+        "1"
+    """
     #da la opcion de escoger una estación para ver sus medidas o ingresar nuevas medidas
     while True:
         print("\nSeleccione una estación para ver sus medidas o ingresar nuevas medidas:")
@@ -83,6 +132,21 @@ def seleccionar_estacion():
         print("Código de estación inválido. Por favor, intente nuevamente.")
     
 def mostrar_medidas(codigo):
+    """
+    Firma:
+        (str) -> None
+
+    Sinopsis:
+        Muestra en pantalla las categorías de medición, sus fechas y los
+        valores registrados para la estación indicada.
+
+    Entradas y salidas:
+        - codigo: código de la estación cuyas mediciones se quieren consultar.
+        - returns: None; imprime las mediciones en pantalla.
+
+    Ejemplos de uso:
+        >>> mostrar_medidas("1")
+    """
     #muestra todas las medidas registradas de la estación
     if codigo not in registros:
         print("Esa estación todavía no tiene un registro en registros.json.")
@@ -98,6 +162,21 @@ def mostrar_medidas(codigo):
             print(f"{fecha} | {valores}")
 
 def ingresar_medidas(codigo_estacion):
+    """
+    Firma:
+        (str) -> None
+
+    Sinopsis:
+        Solicita las mediciones de las variables para una estación, valida
+        los valores ingresados y los guarda asociados a la fecha actual.
+
+    Entradas y salidas:
+        - codigo_estacion: código de la estación a la que pertenecen las medidas.
+        - returns: None; actualiza los registros y guarda los cambios en el archivo.
+
+    Ejemplos de uso:
+        >>> ingresar_medidas("1")
+    """
     #ingresa nuevas medidas registradas para la estacion
     #esta toma la fecha de forma automatica
     # Comprueba que la estación exista en los registros.
@@ -138,6 +217,21 @@ def ingresar_medidas(codigo_estacion):
     print("Medidas registradas:", momento)
 
 def gestion_estaciones():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Presenta el menú de gestión de estaciones y permite acceder a las
+        opciones para crear, editar o eliminar una estación.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; ejecuta la opción seleccionada por el usuario.
+
+    Ejemplos de uso:
+        >>> gestion_estaciones()
+    """
     #da la opcion al usuario de crear, editar, eliminar estacion
     en_gestion_estaciones = True
     while en_gestion_estaciones:
@@ -161,6 +255,21 @@ def gestion_estaciones():
             print("Por favor ingrese una opcion valida")
 
 def crear_estacion():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Genera un nuevo código de estación, solicita su nombre, agrega la
+        estación a la lista y guarda los cambios.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; incorpora la nueva estación y actualiza el archivo CSV.
+
+    Ejemplos de uso:
+        >>> crear_estacion()
+    """
     #Toma automaticamente el numero mayor de estacion de la base de datos, pide el nombre al usuario y lo añade al sistema
     global estaciones
     max_codigo = max((int(estacion["codigo"]) for estacion in estaciones), default=0)
@@ -179,6 +288,21 @@ def crear_estacion():
     guardar_archivos("estaciones")
 
 def editar_estacion():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Muestra las estaciones registradas y permite cambiar el nombre de
+        una estación seleccionada mediante su código.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; modifica la estación y guarda los cambios.
+
+    Ejemplos de uso:
+        >>> editar_estacion()
+    """
     #Pide al usuario el codigo de la estacion y le permite modificar su nombre (El codigo se mantiene igual)
     print("Estaciones registradas")
     print("Codigo\t|\tNombre estacion")
@@ -206,6 +330,22 @@ def editar_estacion():
     guardar_archivos("estaciones")
 
 def eliminar_estacion():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Permite seleccionar una estación para eliminarla. No permite borrar
+        una estación que tenga valores o registros asociados.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; elimina la estación y actualiza los archivos
+          correspondientes cuando la eliminación está permitida.
+
+    Ejemplos de uso:
+        >>> eliminar_estacion()
+    """
     #Pide al usuario el codigo de una estacion y permite eliminarla de la lista de estaciones (siempre y cuando no tenga registros asociados)
     global estaciones
     print("Estaciones registradas")
@@ -228,6 +368,21 @@ def eliminar_estacion():
     guardar_archivos("registros")
 
 def gestion_usuarios():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Presenta el menú de gestión de usuarios y permite acceder a las
+        opciones para crear, editar o eliminar un usuario.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; ejecuta la opción seleccionada por el usuario.
+
+    Ejemplos de uso:
+        >>> gestion_usuarios()
+    """
     #ofrece las opciones de crear un nuevo usuario, editar el usuario y contrasena de una cuenta y eliminar un usuario
     en_gestion_usuarios = True
     while en_gestion_usuarios:
@@ -250,6 +405,21 @@ def gestion_usuarios():
 
 
 def crear_usuario():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Solicita y valida los datos de un nuevo usuario: documento, nombre,
+        contraseña y rol. Después lo agrega a la lista de usuarios.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; agrega el nuevo usuario y guarda el archivo de usuarios.
+
+    Ejemplos de uso:
+        >>> crear_usuario()
+    """
     #Se ingresa documento, nombre completo, contrasena, confirmacion de la contrasena y el rol del usuario (Administrador u operador)
     Documento_invalido = True
     Contrasena_invalida = True
@@ -297,6 +467,21 @@ def crear_usuario():
     guardar_archivos("usuarios")
 
 def editar_usuario():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Permite buscar un usuario por su documento y modificar su nombre,
+        contraseña y rol.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; actualiza los datos del usuario y guarda los cambios.
+
+    Ejemplos de uso:
+        >>> editar_usuario()
+    """
     #se puede elegir un usuario del listado y modificar su nombre, contrasena y rol
     print("Usuarios registrados")
     print("Documento\t|\tNombre\t|\tContraseña\t|\tRol")
@@ -350,6 +535,21 @@ def editar_usuario():
     guardar_archivos("usuarios")
 
 def eliminar_usuario():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Permite seleccionar un usuario y eliminarlo después de confirmar
+        la operación. Impide eliminar al usuario que tiene la sesión activa.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; elimina el usuario confirmado y guarda los cambios.
+
+    Ejemplos de uso:
+        >>> eliminar_usuario()
+    """
     #elige un usuario del listado y lo elimina (no se puede eliminar el usuario actual en el sistema)
     global usuarios
     print("Usuarios registrados")
@@ -393,6 +593,21 @@ def eliminar_usuario():
 
     
 def depuracion():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Permite elegir si se muestran los registros que aparecen en ambos
+        archivos o los registros que aparecen en cualquiera de los dos.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; imprime los registros correspondientes en pantalla.
+
+    Ejemplos de uso:
+        >>> depuracion()
+    """
     #Ofrece opciones de depuracion al administrador, con las opciones de reportar las medidas comunes en los archivos o las que aparecen en cualqiera de los dos
     print("Opciones de depuracion")
     print("1. Registros comunes")
@@ -410,6 +625,22 @@ def depuracion():
                 print(registro,registros_v2[registro])
 
 def pedir_fecha(mensaje):
+    """
+    Firma:
+        (str) -> (date | None)
+
+    Sinopsis:
+        Solicita una fecha, comprueba que tenga el formato AAAA-MM-DD y
+        devuelve la fecha como un objeto date. Permite cancelar con 0.
+
+    Entradas y salidas:
+        - mensaje: texto que se muestra al solicitar la fecha.
+        - returns: un objeto date si la fecha es válida, o None si se escribe 0.
+
+    Ejemplos de uso:
+        >>> pedir_fecha("Ingrese una fecha: ")
+        datetime.date(2026, 11, 13)
+    """
     #pide una fecha en formato AAAA-MM-DD y la valida; devuelve un date (o None si escribe 0)
     while True:
         entrada = input(mensaje).strip()
@@ -422,6 +653,23 @@ def pedir_fecha(mensaje):
  
  
 def visualizar_estadisticas():
+    """
+    Firma:
+        () -> None
+
+    Sinopsis:
+        Permite elegir un periodo y las variables que se desean consultar.
+        Calcula el máximo, el mínimo y el promedio de las mediciones válidas
+        de todas las estaciones, y muestra o guarda los resultados.
+
+    Entradas y salidas:
+        - No recibe parámetros.
+        - returns: None; presenta las estadísticas en pantalla o las guarda
+          en el archivo Estadisticas.txt. Excluye los valores -999 (ND).
+
+    Ejemplos de uso:
+        >>> visualizar_estadisticas()
+    """
     #el visitante elige periodo, variables y salida; se calcula maximo (con estacion y fecha),
     #minimo (con estacion y fecha) y promedio de cada variable. Los valores -999 (ND) se excluyen
     hoy = datetime.now().date()
@@ -533,6 +781,23 @@ def visualizar_estadisticas():
     
 
 def guardar_archivos(tipo):
+    """
+    Firma:
+        (str) -> None
+
+    Sinopsis:
+        Guarda en el archivo correspondiente los datos de usuarios,
+        estaciones, registros, registros_v2 o variables, según el tipo indicado.
+        Utiliza formato CSV o JSON de acuerdo con el archivo.
+
+    Entradas y salidas:
+        - tipo: nombre del conjunto de datos que se desea guardar:
+          "usuarios", "estaciones", "registros", "registros_v2" o "variables".
+        - returns: None; escribe los datos en el archivo correspondiente.
+
+    Ejemplos de uso:
+        >>> guardar_archivos("usuarios")
+    """
     #depende del argumento que se usa en cada funcion
     #esta sobreescribe los archivos si es csv o json
     if tipo == "usuarios":
